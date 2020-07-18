@@ -1,12 +1,22 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { UserValidationUtility } from './validation/services/user.validation.utility.service';
+import { UserValidationDto } from './dto/user.validation.dto';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(): any {
+    let dto  : any = new UserValidationDto();
+    dto = {
+      'source_type' :  'User',
+      'source_id' :  123,
+      'valid_upto' : 60,
+      'verified_at' :  null
+    }
+    const a =  new UserValidationUtility(dto, 'alphanumeric', 6);
+
+    const b = a.generateToken();
+    return b;
   }
 }

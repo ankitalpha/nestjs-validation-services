@@ -1,8 +1,17 @@
-import { Entity, CreateDateColumn, Column, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  CreateDateColumn,
+  Column,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CommonEntity } from '@servicelabsco/nestjs-utility-services';
 
-@Entity()
+@Entity('sys_user_validations')
 export class UserValidation extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column()
   source_type: string;
 
@@ -15,6 +24,6 @@ export class UserValidation extends BaseEntity {
   @Column()
   valid_upto: number;
 
-  @CreateDateColumn()
+  @Column()
   verified_at: Date;
 }

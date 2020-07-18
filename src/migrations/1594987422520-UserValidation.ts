@@ -1,25 +1,36 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 export class UserValidation1594987422520 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'utl_user_validations',
+        name: 'sys_user_validations',
         columns: [
           {
-            name: 'id', type: 'int',isPrimary: true,
-          },
-          {
-            name: 'source_type',
-            type: 'varchar',
-          },
-          {
-            name: 'source_id',
+            name: 'id',
             type: 'int',
+            isPrimary: true,
+          },
+          { name: 'source_type', type: 'varchar' },
+          { name: 'source_id', type: 'int' },
+          { name: 'token', type: 'varchar' },
+          { name: 'type_id', type: 'int' },
+          { name: 'verified_at', type: 'datetime' },
+          { name: 'valid_upto', type: 'datetime', isNullable: false },
+          { name: 'deleted_at', type: 'datetime', isNullable: true },
+          { name: 'updated_at', type: 'datetime', isNullable: true },
+          { name: 'created_at', type: 'datetime', isNullable: true },
+          {
+            name: 'created_by', //make it foreign key in future
+            type: 'bigint',
+            isNullable: true,
+            unsigned: true,
           },
           {
-            name: 'token',
-            type: 'varchar',
+            name: 'updated_by', //make it foreign key in future
+            type: 'bigint',
+            isNullable: true,
+            unsigned: true,
           },
         ],
       }),
@@ -27,13 +38,17 @@ export class UserValidation1594987422520 implements MigrationInterface {
     );
 
     await queryRunner.createIndex(
-      'utl_validations',
+      'sys_user_validations',
       new TableIndex({
-        name: 'utl_validations_source_type_source_id',
+        name: 'sys_user_validations_source_type_source_id',
         columnNames: ['source_type', 'source_id'],
       }),
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable(new Table({ name: 'sys_user_validations' }));
+
+    global.console.log('Reverted Migration ', __filename);
+  }
 }
