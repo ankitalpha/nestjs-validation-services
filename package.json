@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Nestjs package to support all kind of token validation",
   "author": "Ankit Tiwari <ankit19.alpha@gmail.com>",
-  "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
