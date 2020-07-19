@@ -2,8 +2,7 @@ import { Module, DynamicModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { typeOrmConfig } from './config/typeorm.config';
-import * as ormconfig from './ormconfig';
+import * as ormconfig from './config/typeorm.config';
 import { ValidationModule } from './validation/validation.module';
 
 export function DatabaseOrmModule(): DynamicModule {
