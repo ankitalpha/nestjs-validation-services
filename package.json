@@ -1,6 +1,6 @@
 {
   "name": "@servicelabsco/nestjs-validation-services",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nestjs package to support all kind of token validation",
   "author": "Ankit Tiwari <ankit19.alpha@gmail.com>",
   "license": "MIT",
@@ -10,6 +10,9 @@
     "dist/**/*",
     "*.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
