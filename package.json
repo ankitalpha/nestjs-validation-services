@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "description": "Nestjs package to support all kind of token validation",
   "author": "Ankit Tiwari <ankit19.alpha@gmail.com>",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*",
+    "*.md"
+  ],
+  "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
