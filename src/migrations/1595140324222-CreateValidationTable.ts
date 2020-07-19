@@ -1,10 +1,15 @@
 import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
-export class UserValidation1594987422520 implements MigrationInterface {
+/**
+ * @export
+ * @class CreateValidationTable1595140324222
+ * @implements {MigrationInterface}
+ */
+export class CreateValidationTable1595140324222 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'sys_user_validations',
+        name: 'sys_validations',
         columns: [
           {
             name: 'id',
@@ -41,16 +46,16 @@ export class UserValidation1594987422520 implements MigrationInterface {
     );
 
     await queryRunner.createIndex(
-      'sys_user_validations',
+      'sys_validations',
       new TableIndex({
-        name: 'sys_user_validations_source_type_source_id',
+        name: 'sys_validations_source_type_source_id',
         columnNames: ['source_type', 'source_id'],
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(new Table({ name: 'sys_user_validations' }));
+    await queryRunner.dropTable(new Table({ name: 'sys_validations' }));
 
     global.console.log('Reverted Migration ', __filename);
   }

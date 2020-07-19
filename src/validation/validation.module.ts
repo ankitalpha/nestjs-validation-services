@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserValidationService } from './services/user.validation.service';
-import { UserValidation } from './entities/user.validation.entity';
+import { ValidationService } from './services/validation.service';
+import { Validation } from './entities/validation.entity';
 
+/**
+ * @export
+ * @class ValidationModule
+ */
 @Module({
-  imports: [TypeOrmModule.forFeature([UserValidation])],
+  imports: [TypeOrmModule.forFeature([Validation])],
   controllers: [],
-  providers: [UserValidationService],
+  providers: [ValidationService],
 })
 export class ValidationModule {}

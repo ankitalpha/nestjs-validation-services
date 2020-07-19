@@ -1,6 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class UserValidationDto {
+/**
+ * @export
+ * @class ValidationDto
+ */
+export class ValidationDto {
   @IsNotEmpty()
   source_type: string;
 

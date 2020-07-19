@@ -1,8 +1,13 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { CommonEntity } from '@servicelabsco/nestjs-utility-services';
 
-@Entity('sys_user_validations')
-export class UserValidation extends BaseEntity {
+/**
+ * @export
+ * @class Validation
+ * @extends {CommonEntity}
+ */
+@Entity('sys_validations')
+export class Validation extends CommonEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
