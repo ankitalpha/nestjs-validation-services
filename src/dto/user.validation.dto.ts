@@ -13,5 +13,5 @@ export class UserValidationDto {
   verified_at: string;
 
   @IsNotEmpty()
-  type: number;
+  type_id: number;
 }

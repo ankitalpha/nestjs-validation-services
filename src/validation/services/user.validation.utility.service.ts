@@ -1,5 +1,8 @@
 import { UserValidation } from '../entities/user.validation.entity';
-import { CommonService } from '@servicelabsco/nestjs-utility-services';
+import {
+  CommonService,
+  DateUtil,
+} from '@servicelabsco/nestjs-utility-services';
 import { UserValidationDto } from '../../dto/user.validation.dto';
 import { getRepository } from 'typeorm';
 
@@ -10,101 +13,88 @@ export const generatorType = {
 };
 
 export class UserValidationUtility {
-  private token: string;
-  private source_type: string;
-  private source_id: number;
+  private token = '';
   private length: number;
   private valid_upto: number; //in minutes
-  private tokenType: string;
-  private type  : number;
   private userValidationDto: UserValidationDto;
+  private tokenType: string;
 
+  /**
+   *Creates an instance of UserValidationUtility.
+   * @param {UserValidationDto} userValidationDto
+   * @param {string} [tokenType='alphanumeric']
+   * @param {number} [length=6]
+   * @memberof UserValidationUtility
+   */
   constructor(
     userValidationDto: UserValidationDto,
-    tokenType: string,
-    length: number,
+    tokenType = 'alphanumeric',
+    length = 6,
   ) {
+    this.userValidationDto = userValidationDto;
     this.token = userValidationDto.token;
-    this.source_type = userValidationDto.source_type;
-    this.source_id = userValidationDto.source_id;
-    this.type = userValidationDto.type;
     this.valid_upto = userValidationDto.valid_upto;
     this.length = length;
-    this.createDTO();
+    this.tokenType = tokenType;
   }
 
-  createDTO(): any {
-    this.userValidationDto = {
-      'source_type': this.source_type,
-      'source_id': this.source_id,
-      'valid_upto': 1234,
-      'token': this.token,
-      'type' : this.type,
-      'verified_at'  :  null
-    };
-  }
-
-  async generateToken(): Promise<string | any> {
+  public async generateToken(): Promise<string | any> {
     const query = await this.getValidToken();
-    const token = query.getOne();
+    const validationRecord = await query.getOne();
 
-    if (token) {
-      return token.token;
+    if (validationRecord) {
+      return validationRecord.token;
     }
 
-    this.createToken();
-
-    return this.token;
+    return this.createToken();
   }
 
-  async createToken(): Promise<UserValidation> {
+  private async createToken(): Promise<string> {
     const userValidation = new UserValidation();
 
     userValidation.source_type = this.userValidationDto.source_type;
     userValidation.source_id = this.userValidationDto.source_id;
-    userValidation.token = this.generate(generatorType[this.type]);
-    userValidation.valid_upto = this.userValidationDto.valid_upto;
+    userValidation.token = this.generate(generatorType[this.tokenType]);
+    userValidation.valid_upto = DateUtil.getFutureDateTime(this.valid_upto);
+    userValidation.type_id = this.userValidationDto.type_id;
 
-    // await userValidation.save();
+    await userValidation.save();
 
-    return userValidation;
+    return userValidation.token;
   }
 
-  async getValidToken(): Promise<any> {
+  private async getValidToken(): Promise<any> {
     const query = getRepository(UserValidation)
       .createQueryBuilder('validate')
-      .where('validate.source_type = : type', {
+      .where('validate.source_type = :type', {
         type: this.userValidationDto.source_type,
       })
-      .where('validate.source_id = : source_id', {
+      .andWhere('validate.source_id = :source_id', {
         source_id: this.userValidationDto.source_id,
       })
-      .where('validate.verified_at IS NULL');
+      .andWhere('validate.verified_at IS NULL');
 
     return query;
   }
 
-  async verifyToken(): Promise<string | boolean> {
+  public async verifyToken(): Promise<string | boolean> {
     const query = await this.getValidToken();
 
-    query.where('validation.token = : token', { token: this.token });
-    const userValidation = query.getOne();
+    query.andWhere('validate.token = :token', { token: this.token });
+    const userValidation = await query.getOne();
 
-    return userValidation ? userValidation.token : false;
+    if (!userValidation || userValidation.token !== this.token) {
+      return false;
+    }
+
+    userValidation.verified_at = DateUtil.getDateTime();
+    userValidation.save();
+    return true;
   }
 
-  async verifyOtp(): Promise<string | boolean> {
-    return this.verifyToken();
-  }
-
-  private async checkUnexpiredToken(): Promise<UserValidation | null> {
-    const query = await this.getValidToken();
-    return await query.getOne();
-  }
-
-  public generate(set: string): string {
+  private generate(set: string): string {
     for (let i = this.length; i > 0; --i) {
-      this.token += set.charAt[Math.floor(Math.random() * set.length)];
+      this.token += set.charAt(Math.floor(Math.random() * set.length));
     }
 
     return this.token;
