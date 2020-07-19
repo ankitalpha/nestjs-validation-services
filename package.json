@@ -1,6 +1,6 @@
 {
   "name": "@servicelabsco/nestjs-validation-services",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Nestjs package to support all kind of token validation",
   "author": "Ankit Tiwari <ankit19.alpha@gmail.com>",
   "private": true,
